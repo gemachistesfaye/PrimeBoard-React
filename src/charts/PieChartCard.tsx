@@ -1,4 +1,5 @@
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import type { PieLabelRenderProps } from "recharts";
 
 const data = [
   { name: "Students", value: 400 },
@@ -18,18 +19,17 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-}: {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  percent: number;
- 
-}) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+}: PieLabelRenderProps) => {
+  const cxNum = Number(cx ?? 0);
+  const cyNum = Number(cy ?? 0);
+  const midAngleNum = Number(midAngle ?? 0);
+  const innerRadiusNum = Number(innerRadius ?? 0);
+  const outerRadiusNum = Number(outerRadius ?? 0);
+  const percentNum = Number(percent ?? 0);
+
+  const radius = innerRadiusNum + (outerRadiusNum - innerRadiusNum) * 0.5;
+  const x = cxNum + radius * Math.cos(-midAngleNum * RADIAN);
+  const y = cyNum + radius * Math.sin(-midAngleNum * RADIAN);
 
   return (
     <text
@@ -40,7 +40,7 @@ const renderCustomizedLabel = ({
       dominantBaseline="central"
       fontSize={12}
     >
-      {`${(percent * 100).toFixed(0)}%`}
+      {`${(percentNum * 100).toFixed(0)}%`}
     </text>
   );
 };
