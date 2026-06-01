@@ -13,13 +13,14 @@ import UsersTablePage from "./pages/UsersTablePage";
 
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("theme");
+    // Using a new key to reset user's previous preference and force dark mode
+    const savedTheme = localStorage.getItem("primeboard_theme");
     return savedTheme !== "light";
   });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+    localStorage.setItem("primeboard_theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
 
   return (
