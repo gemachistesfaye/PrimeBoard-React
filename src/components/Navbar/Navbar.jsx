@@ -120,11 +120,11 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
                 className="flex items-center gap-2 md:gap-3 p-1 md:p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all"
               >
                 <div className="relative">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-blue-500/20">JD</div>
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-sm font-bold text-white shadow-lg shadow-blue-500/20">GT</div>
                   <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-white dark:border-slate-900 ${userStatus === 'online' ? 'bg-green-500' : 'bg-slate-400'}`}></div>
                 </div>
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none">John Doe</p>
+                  <p className="text-sm font-bold text-slate-700 dark:text-slate-200 leading-none">Gemachis T</p>
                   <p className="text-[11px] text-slate-400 mt-1 capitalize">{userStatus}</p>
                 </div>
                 <ChevronDown size={16} className={`text-slate-500 transition-transform duration-200 ${isProfileOpen ? 'rotate-180' : ''}`} />

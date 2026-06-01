@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/prime-board-logo.png" alt="Prime Board Logo" width="120" />
+  <img src="public/banner.png" alt="Prime Board Banner" width="100%" />
   
   # Prime Board 
   **Premium Academic Management Dashboard**
@@ -15,6 +15,17 @@
 ## 🚀 Overview
 
 **Prime Board** is a high-fidelity, modern administrative dashboard designed for universities and academic institutions. It provides a seamless, dark-mode-first user experience for managing students, generating official academic transcripts, and analyzing institutional data.
+
+## 📸 Screenshots
+
+| Feature | Screenshot |
+|---------|------------|
+| **1. Main Dashboard Overview** | <img src="docs/screenshots/1-dashboard.png" width="600" alt="Main Dashboard Overview"> |
+| **2. Advanced Analytics** | <img src="docs/screenshots/2-analytics.png" width="600" alt="Advanced Analytics"> |
+| **3. Settings & Theme Controls** | <img src="docs/screenshots/3-settings.png" width="600" alt="Settings & Theme Controls"> |
+| **4. Users & Students Table** | <img src="docs/screenshots/4-users-table.png" width="600" alt="Users & Students Table"> |
+| **5. Booking Interface** | <img src="docs/screenshots/5-booking.png" width="600" alt="Booking Interface"> |
+| **6. Academic Toolkit** | <img src="docs/screenshots/6-toolkit.png" width="600" alt="Academic Toolkit"> |
 
 ## ✨ Key Features
 

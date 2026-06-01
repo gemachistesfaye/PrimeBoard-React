@@ -16,7 +16,7 @@ export default function Booking() {
   const itemsPerPage = 5;
 
   const [bookings, setBookings] = useState([
-    { id: "BK001", passenger: "Alex Johnson", email: "alex.j@example.com", status: "Confirmed", flight: "ET302", date: "Oct 12, 2024" },
+    { id: "BK001", passenger: "Gemachis Tesfaye", email: "gemachis.t@example.com", status: "Confirmed", flight: "ET302", date: "Oct 12, 2024" },
     { id: "BK002", passenger: "Sarah Williams", email: "sarah.w@example.com", status: "Confirmed", flight: "ET118", date: "Nov 05, 2024" },
     { id: "BK003", passenger: "Michael Chen", email: "m.chen@example.com", status: "Cancelled", flight: "SQ421", date: "Sep 20, 2024" },
     { id: "BK004", passenger: "Emily Davis", email: "emily.d@example.com", status: "Confirmed", flight: "IB625", date: "Jan 15, 2025" },
