@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="public/banner.png" alt="Prime Board Banner" width="100%" />
+  <img src="public/banner.png" alt="Prime Board Banner" width="100%" style="max-height: 220px; object-fit: cover; border-radius: 10px; margin-bottom: 20px;" />
   
-  # Prime Board 
-  **Premium Academic Management Dashboard**
+  # 🎓 Prime Board 
+  **Premium Academic Management Dashboard** ✨
 
   [![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/)
@@ -18,14 +18,13 @@
 
 ## 📸 Screenshots
 
-| Feature | Screenshot |
-|---------|------------|
-| **1. Main Dashboard Overview** | <img src="docs/screenshots/1-dashboard.png" width="600" alt="Main Dashboard Overview"> |
-| **2. Advanced Analytics** | <img src="docs/screenshots/2-analytics.png" width="600" alt="Advanced Analytics"> |
-| **3. Settings & Theme Controls** | <img src="docs/screenshots/3-settings.png" width="600" alt="Settings & Theme Controls"> |
-| **4. Users & Students Table** | <img src="docs/screenshots/4-users-table.png" width="600" alt="Users & Students Table"> |
-| **5. Booking Interface** | <img src="docs/screenshots/5-booking.png" width="600" alt="Booking Interface"> |
-| **6. Academic Toolkit** | <img src="docs/screenshots/6-toolkit.png" width="600" alt="Academic Toolkit"> |
+| 🖥️ Main Dashboard Overview | 📈 Advanced Analytics |
+|:---:|:---:|
+| <img src="docs/screenshots/1-dashboard.png" width="400" alt="Main Dashboard Overview"> | <img src="docs/screenshots/2-analytics.png" width="400" alt="Advanced Analytics"> |
+| **⚙️ Settings & Theme** | **👥 Users & Students Table** |
+| <img src="docs/screenshots/3-settings.png" width="400" alt="Settings & Theme Controls"> | <img src="docs/screenshots/4-users-table.png" width="400" alt="Users & Students Table"> |
+| **📅 Booking Interface** | **🧰 Academic Toolkit** |
+| <img src="docs/screenshots/5-booking.png" width="400" alt="Booking Interface"> | <img src="docs/screenshots/6-toolkit.png" width="400" alt="Academic Toolkit"> |
 
 ## ✨ Key Features
 
@@ -74,6 +73,10 @@ PrimeBoard-React/
 ├── .github/                # GitHub Actions & Issue Templates
 └── package.json            # Project dependencies and scripts
 ```
+
+## 🔒 Security
+
+We take security seriously! 🛡️ Please review our [Security Policy](SECURITY.md) for information on how to securely report vulnerabilities and our support guidelines.
 
 ## 📜 License
 
