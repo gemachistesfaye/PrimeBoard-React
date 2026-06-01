@@ -7,10 +7,10 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
 const initialStudents = [
-  { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "Active", coarse: "Computer Science", joined: "2024-01-15", gpa: 3.8, tuition: "Paid" },
-  { id: "2", name: "Bob Smith", email: "bob@example.com", status: "Inactive", coarse: "Mathematics", joined: "2024-02-20", gpa: 2.9, tuition: "Pending" },
-  { id: "3", name: "Carol White", email: "carol@example.com", status: "Active", coarse: "Physics", joined: "2024-03-10", gpa: 3.5, tuition: "Paid" },
-  { id: "4", name: "David Brown", email: "david@example.com", status: "Active", coarse: "Chemistry", joined: "2024-04-05", gpa: 3.2, tuition: "Paid" },
+  { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "Active", coarse: "Computer Science", joined: "2024-01-15", gpa: 3.8, tuition: "Paid", courses: [{name: "Data Structures", credits: 3.0, grade: "A"}, {name: "Algorithms", credits: 3.0, grade: "A-"}] },
+  { id: "2", name: "Bob Smith", email: "bob@example.com", status: "Inactive", coarse: "Mathematics", joined: "2024-02-20", gpa: 2.9, tuition: "Pending", courses: [{name: "Calculus I", credits: 4.0, grade: "B"}, {name: "Linear Algebra", credits: 3.0, grade: "C+"}] },
+  { id: "3", name: "Carol White", email: "carol@example.com", status: "Active", coarse: "Physics", joined: "2024-03-10", gpa: 3.5, tuition: "Paid", courses: [{name: "Quantum Mechanics", credits: 4.0, grade: "A"}, {name: "Thermodynamics", credits: 3.0, grade: "B+"}] },
+  { id: "4", name: "David Brown", email: "david@example.com", status: "Active", coarse: "Chemistry", joined: "2024-04-05", gpa: 3.2, tuition: "Paid", courses: [{name: "Organic Chemistry", credits: 4.0, grade: "B"}, {name: "Inorganic Chemistry", credits: 3.0, grade: "B+"}] },
 ];
 
 export default function Students() {
@@ -24,6 +24,18 @@ export default function Students() {
   const [selectedTab, setSelectedTab] = useState('All');
   const [deleteId, setDeleteId] = useState(null);
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [modalCourses, setModalCourses] = useState([]);
+
+  const openAddModal = () => {
+    setModalCourses([{ name: "", credits: 3.0, grade: "A" }]);
+    setShowAddModal(true);
+  };
+
+  const updateCourse = (index, field, value) => {
+    const newCourses = [...modalCourses];
+    newCourses[index][field] = value;
+    setModalCourses(newCourses);
+  };
 
   const toggleStatus = (id) => {
     setStudents(prev => prev.map(s => 
@@ -33,10 +45,10 @@ export default function Students() {
   };
 
   const handleDownloadTranscript = (student) => {
-    const subjects = [
-      { name: "Core Principles of " + student.coarse, grade: student.gpa >= 3.5 ? "A" : student.gpa >= 3.0 ? "B" : "C" },
-      { name: "Advanced Methodology", grade: student.gpa >= 3.2 ? "A-" : "B" },
-      { name: "Elective Seminar", grade: "A" }
+    const subjects = student.courses && student.courses.length > 0 ? student.courses : [
+      { name: "Core Principles of " + student.coarse, credits: 3.0, grade: student.gpa >= 3.5 ? "A" : student.gpa >= 3.0 ? "B" : "C" },
+      { name: "Advanced Methodology", credits: 3.0, grade: student.gpa >= 3.2 ? "A-" : "B" },
+      { name: "Elective Seminar", credits: 3.0, grade: "A" }
     ];
     
     const doc = new jsPDF();
@@ -83,7 +95,7 @@ export default function Students() {
     autoTable(doc, {
       startY: 90,
       head: [['Course Name', 'Credits', 'Grade']],
-      body: subjects.map(sub => [sub.name, '3.0', sub.grade]),
+      body: subjects.map(sub => [sub.name, sub.credits || '3.0', sub.grade]),
       theme: 'grid',
       headStyles: { fillColor: [30, 58, 138], textColor: 255 },
       styles: { font: 'helvetica', fontSize: 10, cellPadding: 5 },
@@ -115,6 +127,7 @@ export default function Students() {
       gpa: parseFloat(data.get("gpa") ?? "0.0"),
       tuition: String(data.get("tuition") ?? "Pending"),
       joined: new Date().toISOString().split("T")[0],
+      courses: [...modalCourses],
     };
     setStudents((prev) => [newStudent, ...prev]);
     setShowAddModal(false);
@@ -124,6 +137,7 @@ export default function Students() {
   const handleEditOpen = (student) => {
     setEditId(student.id);
     setEditStudent(student);
+    setModalCourses(student.courses && student.courses.length > 0 ? [...student.courses] : [{ name: "", credits: 3.0, grade: "A" }]);
     setShowEditModal(true);
   };
 
@@ -140,7 +154,8 @@ export default function Students() {
               email: String(data.get("email") ?? ""), 
               coarse: String(data.get("coarse") ?? ""),
               gpa: parseFloat(data.get("gpa") ?? "0.0"),
-              tuition: String(data.get("tuition") ?? "Pending")
+              tuition: String(data.get("tuition") ?? "Pending"),
+              courses: [...modalCourses]
             }
           : s
       )
@@ -194,7 +209,7 @@ export default function Students() {
             <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 transition-all text-sm font-medium">
               <Download size={18} /> Export List
             </button>
-            <button onClick={() => setShowAddModal(true)} className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all text-sm font-medium">
+            <button onClick={openAddModal} className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all text-sm font-medium">
               <Plus size={18} /> Add Student
             </button>
           </div>
@@ -415,6 +430,28 @@ export default function Students() {
                   </select>
                 </div>
               </div>
+
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Courses (Max 10)</label>
+                  {modalCourses.length < 10 && (
+                    <button type="button" onClick={() => setModalCourses([...modalCourses, { name: "", credits: 3.0, grade: "A" }])} className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                      + Add Course
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                  {modalCourses.map((c, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input value={c.name} onChange={e => updateCourse(i, 'name', e.target.value)} placeholder="Course name" className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <input type="number" step="0.5" value={c.credits} onChange={e => updateCourse(i, 'credits', parseFloat(e.target.value))} placeholder="Cr." className="w-16 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <input value={c.grade} onChange={e => updateCourse(i, 'grade', e.target.value)} placeholder="Gr." className="w-16 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <button type="button" onClick={() => setModalCourses(modalCourses.filter((_, idx) => idx !== i))} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded-lg transition-colors"><XCircle size={14}/></button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex gap-3 justify-end pt-4 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <button type="button" onClick={() => setShowAddModal(false)} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm">Cancel</button>
                 <button type="submit" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all font-medium text-sm">Save Student</button>
@@ -455,6 +492,28 @@ export default function Students() {
                   </select>
                 </div>
               </div>
+
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Courses (Max 10)</label>
+                  {modalCourses.length < 10 && (
+                    <button type="button" onClick={() => setModalCourses([...modalCourses, { name: "", credits: 3.0, grade: "A" }])} className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">
+                      + Add Course
+                    </button>
+                  )}
+                </div>
+                <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                  {modalCourses.map((c, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input value={c.name} onChange={e => updateCourse(i, 'name', e.target.value)} placeholder="Course name" className="flex-1 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <input type="number" step="0.5" value={c.credits} onChange={e => updateCourse(i, 'credits', parseFloat(e.target.value))} placeholder="Cr." className="w-16 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <input value={c.grade} onChange={e => updateCourse(i, 'grade', e.target.value)} placeholder="Gr." className="w-16 px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-xs transition-all dark:text-slate-200" required />
+                      <button type="button" onClick={() => setModalCourses(modalCourses.filter((_, idx) => idx !== i))} className="text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 p-1.5 rounded-lg transition-colors"><XCircle size={14}/></button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex gap-3 justify-end pt-4 mt-6 border-t border-slate-100 dark:border-slate-800">
                 <button type="button" onClick={() => setShowEditModal(false)} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm">Cancel</button>
                 <button type="submit" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all font-medium text-sm">Save Changes</button>
