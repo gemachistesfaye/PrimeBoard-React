@@ -1,14 +1,21 @@
-# Security Policy
+# 🔐 Security Policy
 
-## Supported Versions
+## 📦 Supported Versions
 
-Currently, only the `main` branch (latest release) is supported with security updates.
+Only the **`main`** branch (latest release) receives security updates.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| `main`  | :white_check_mark: |
+| Version | Supported |
+|:-------|:----------:|
+| `main` | ✅ |
 
-## Reporting a Vulnerability
+## 🛡️ Reporting a Vulnerability
 
-If you discover a security vulnerability within Prime Board, please DO NOT open a public issue. Instead, send an email to the repository maintainers. 
-All security vulnerabilities will be promptly addressed.
+If you discover a security issue, **do not** open a public issue. Instead, send an email to the maintainers:
+
+📧 **security@primeboard.dev** (or the email listed in the repository’s `package.json`/`README`).
+
+We will triage the report promptly, work on a fix, and coordinate a responsible disclosure.
+
+---
+
+*Your vigilance helps keep Prime Board safe for everyone.*

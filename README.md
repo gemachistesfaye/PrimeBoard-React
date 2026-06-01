@@ -144,14 +144,14 @@ PrimeBoard-React/
 
 ---
 
-## Roadmap
+## 🚀 Roadmap
 
-- [ ] TypeScript migration — add proper type annotations across all components
-- [ ] Unit tests with Vitest + React Testing Library
-- [ ] Real API integration (REST backend or Supabase)
-- [ ] GitHub Actions CI workflow (build + lint on every push)
-- [ ] Internationalization (i18n) support
-- [ ] Accessibility audit and WCAG compliance
+- ✅ Unit tests with Vitest + React Testing Library
+- ✅ Real API integration (REST backend or Supabase)
+- ✅ GitHub Actions CI workflow (build + lint on every push)
+- ✅ Internationalization (i18n) support
+- ✅ Accessibility audit and WCAG compliance
+- 📈 Performance profiling & bundle analysis (new)
 
 ---
 
@@ -160,8 +160,15 @@ PrimeBoard-React/
 <div align="center">
 
 Made with care by [Gemachis Tesfaye](https://github.com/gemachistesfaye)
+
+## 📬 Contact
+
+- 📧 Email: gemachistesfaye36@gmial.com
+- 🌐 GitHub: https://github.com/gemachistesfaye
+
+
 <br/>
-3rd-year Information Science student · BuildSphere 60-Day Challenge
+
 
 <br/>
 

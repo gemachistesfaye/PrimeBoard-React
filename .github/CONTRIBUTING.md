@@ -1,16 +1,40 @@
-# Contributing to Prime Board
+# 📦 Contributing to Prime Board
 
-First off, thank you for considering contributing to Prime Board! It's people like you that make open-source software such a great community.
+Thank you for considering a contribution! 🎉 Your help makes this project stronger.
 
 ## 🛠️ Development Workflow
 
-1. **Fork** the repo on GitHub
-2. **Clone** the project to your own machine
-3. **Commit** changes to your own branch
-4. **Push** your work back up to your fork
-5. Submit a **Pull Request** so that we can review your changes
+1. **Fork** the repository on GitHub. 🍴
+2. **Clone** your fork locally:
+   ```bash
+   git clone https://github.com/your-username/PrimeBoard-React.git
+   cd PrimeBoard-React
+   ```
+3. **Create** a feature branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+4. **Make** your changes, ensuring:
+   - Tailwind CSS utility classes are used consistently.
+   - Dark‑mode support (`dark:` classes) remains intact.
+   - All icons come from **Lucide‑React**.
+5. **Run** the lint and test suite locally:
+   ```bash
+   npm run lint
+   ```
+6. **Commit** with a clear message:
+   ```bash
+   git commit -m "feat: short description of your change"
+   ```
+7. **Push** to your fork and open a **Pull Request**. 📬
 
-## 📝 Code Style
-- Ensure all components use standard Tailwind CSS classes.
-- Keep the dark mode support intact (`dark:` classes).
-- Use Lucide-React for all icons.
+## 📜 Code Style Guidelines
+
+- **Formatting** – Prettier is configured; run `npm run format` before committing.
+- **Naming** – Use **PascalCase** for component filenames and **camelCase** for variables.
+- **Testing** – Add or update tests where applicable (Vitest + React Testing Library).
+- **Documentation** – Update the README or component JSDoc comments when you add new features.
+
+---
+
+Happy coding! 🚀
