@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Layout } from '../components/Layout/Layout';
 import { 
   Search, Download, PlaneTakeoff, CheckCircle2, XCircle, Trash2,
   UserCheck, UserX, Edit2, ChevronLeft, ChevronRight, AlertTriangle,
@@ -92,8 +91,7 @@ export default function Booking() {
   };
 
   return ( 
-    <Layout>
-    <div className="min-h-screen p-4 sm:p-6 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-200">
+    <div className="text-slate-900 dark:text-slate-200">
       <style>{`
         @media print {
           .no-print, nav, aside, footer, button, .modal-backdrop, .search-container, .tabs-container { display: none !important; }
@@ -234,9 +232,9 @@ export default function Booking() {
           <p className="text-[10px]">Reference: FLIGHT-EX-992 | Date: {new Date().toLocaleDateString()}</p>
         </div>
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="border border-gray-300 p-2 text-center text-[10px]"><strong>Total Capacity:</strong> {stats.total}</div>
-          <div className="border border-gray-300 p-2 text-center text-[10px]"><strong>Confirmed Seats:</strong> {stats.confirmed}</div>
-          <div className="border border-gray-300 p-2 text-center text-[10px]"><strong>Cancellations:</strong> {stats.cancelled}</div>
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Total Capacity:</strong> {stats.total}</div>
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Confirmed Seats:</strong> {stats.confirmed}</div>
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Cancellations:</strong> {stats.cancelled}</div>
         </div>
         <table className="pdf-table">
           <thead><tr><th>Manifest ID</th><th>Passenger Name</th><th>Email</th><th>Flight No.</th><th>Status</th><th>Travel Date</th></tr></thead>
@@ -246,7 +244,7 @@ export default function Booking() {
             ))}
           </tbody>
         </table>
-        <div className="mt-12 pt-4 border-t border-gray-200 text-[8px] text-gray-400 text-center">Automated System Export - Confidential Flight Data - Page 1 of 1</div>
+        <div className="mt-12 pt-4 border-t border-slate-200 text-[8px] text-slate-400 text-center">Automated System Export - Confidential Flight Data - Page 1 of 1</div>
       </div>
 
       {isModalOpen && (
@@ -283,6 +281,5 @@ export default function Booking() {
         </div>
       )}
     </div>
-    </Layout>
   );
 }

@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  User, Lock, Settings, Activity, Wrench, Globe, ShieldCheck, LogOut, Trash2, 
-  Download, Copy, Camera, CheckCircle2, AlertCircle, Loader2
+  User, Lock, Settings as SettingsIcon, Activity, Wrench, Globe, ShieldCheck, LogOut, Trash2, Download, Copy, Camera, CheckCircle2, AlertCircle, Loader2
 } from 'lucide-react';
-
-import { Layout } from "../components/Layout/Layout";
 
 const Card = ({ children, className = "" }) => (
   <div className={`glass-card rounded-2xl ${className}`}>
@@ -55,9 +52,8 @@ const Toggle = ({ enabled, onChange, label }) => (
   </div>
 );
 
-export default function App() {
+export default function Settings({ isDarkMode, setIsDarkMode }) {
   const fileInputRef = useRef(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [profile, setProfile] = useState({
     name: "Alex Johnson",
@@ -75,14 +71,6 @@ export default function App() {
   });
 
   const [feedback, setFeedback] = useState(null);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
 
   const showFeedback = (msg, type = 'success') => {
     setFeedback({ msg, type });
@@ -174,8 +162,7 @@ export default function App() {
   };
 
   return (
-     <Layout> 
-    <div className="min-h-screen bg-transparent text-slate-900 dark:text-slate-200 p-4 md:p-8 transition-colors duration-300">
+    <div className="bg-transparent text-slate-900 dark:text-slate-200 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -268,7 +255,7 @@ export default function App() {
 
           <Card className="lg:col-span-1">
             <CardHeader 
-              icon={Settings} 
+              icon={SettingsIcon} 
               title="Preferences" 
               description="Personalize your dashboard experience." 
             />
@@ -414,6 +401,5 @@ export default function App() {
         </footer>
       </div>
     </div>
-    </Layout>
   );
 }

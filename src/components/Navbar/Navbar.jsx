@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { 
-  Search, Bell, ChevronDown, Sun, Moon, User, LogOut, CheckCircle2, Clock, AlertTriangle, Circle 
+  Search, Bell, ChevronDown, Sun, Moon, User, LogOut, CheckCircle2, Clock, AlertTriangle, Circle, Zap 
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -47,10 +47,13 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50">
-        <nav className="h-20 glass-panel border-b border-white/20 dark:border-slate-800 px-6 flex items-center justify-between transition-all duration-300">
+        <nav className="h-20 glass-panel border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between transition-all duration-300">
 
-          <div className="flex items-center gap-4 ml-12 md:ml-16">
-            <h1 className="text-xl font-bold text-slate-800 dark:text-white">BuildShpere</h1>
+          <div className="flex items-center gap-3 ml-12 md:hidden">
+            <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/30">
+              <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-800 dark:text-white">Prime Board</h1>
           </div>
 
           <form onSubmit={handleSearch} className="hidden md:flex relative flex-1 max-w-[400px] mx-6">
@@ -76,7 +79,7 @@ const Navbar = ({ isDarkMode, setIsDarkMode }) => {
             <div className="relative hidden md:block" ref={notificationRef}>
               <button
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                className={`p-2.5 rounded-xl transition-all relative ${isNotificationsOpen ? 'bg-blue-50 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
+                className={`p-2.5 rounded-xl transition-all relative ${isNotificationsOpen ? 'bg-blue-50 dark:bg-blue-500/10 text-blue-600' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'}`}
               >
                 <Bell size={22} />
                 {notifications.length > 0 && (

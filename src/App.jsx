@@ -25,20 +25,18 @@ export default function App() {
   return (
     <Router>
       <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
-        <main className="flex-1 overflow-hidden">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/booking" element={<Booking />} />
-            <Route path="/students" element={<Students />} />
-            <Route path="/toolkit" element={<Toolkit />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/students/users" element={<UsersTablePage />} />
-          </Routes>
-        </main>
-      </div>
+      <Navbar isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />
+      <main className="pt-20 pb-8 px-4 sm:px-6 md:px-8 md:ml-64 min-h-screen overflow-x-hidden">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/students" element={<Students />} />
+          <Route path="/toolkit" element={<Toolkit />} />
+          <Route path="/settings" element={<Settings isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
+          <Route path="/students/users" element={<UsersTablePage />} />
+        </Routes>
+      </main>
     </Router>
   );
 }

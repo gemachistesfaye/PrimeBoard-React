@@ -1,10 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { 
+  Search, Plus, Edit2, Trash2, CheckCircle2, XCircle, 
+  GraduationCap, Download, AlertTriangle, MoreVertical, UserCheck, UserX, FileText, BookOpen
+} from 'lucide-react';
 
 const initialStudents = [
-  { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "Active", coarse: "Computer Science", joined: "2024-01-15" },
-  { id: "2", name: "Bob Smith", email: "bob@example.com", status: "Inactive", coarse: "Mathematics", joined: "2024-02-20" },
-  { id: "3", name: "Carol White", email: "carol@example.com", status: "Active", coarse: "Physics", joined: "2024-03-10" },
-  { id: "4", name: "David Brown", email: "david@example.com", status: "Active", coarse: "Chemistry", joined: "2024-04-05" },
+  { id: "1", name: "Alice Johnson", email: "alice@example.com", status: "Active", coarse: "Computer Science", joined: "2024-01-15", gpa: 3.8, tuition: "Paid" },
+  { id: "2", name: "Bob Smith", email: "bob@example.com", status: "Inactive", coarse: "Mathematics", joined: "2024-02-20", gpa: 2.9, tuition: "Pending" },
+  { id: "3", name: "Carol White", email: "carol@example.com", status: "Active", coarse: "Physics", joined: "2024-03-10", gpa: 3.5, tuition: "Paid" },
+  { id: "4", name: "David Brown", email: "david@example.com", status: "Active", coarse: "Chemistry", joined: "2024-04-05", gpa: 3.2, tuition: "Paid" },
 ];
 
 export default function Students() {
@@ -14,7 +18,68 @@ export default function Students() {
   const [editId, setEditId] = useState(null);
   const [editStudent, setEditStudent] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTab, setSelectedTab] = useState('All');
   const [deleteId, setDeleteId] = useState(null);
+  const [activeMenuId, setActiveMenuId] = useState(null);
+
+  const toggleStatus = (id) => {
+    setStudents(prev => prev.map(s => 
+      s.id === id ? { ...s, status: s.status === 'Active' ? 'Inactive' : 'Active' } : s
+    ));
+    setActiveMenuId(null);
+  };
+
+  const handleDownloadTranscript = (student) => {
+    const subjects = [
+      { name: "Core Principles of " + student.coarse, grade: student.gpa >= 3.5 ? "A" : student.gpa >= 3.0 ? "B" : "C" },
+      { name: "Advanced Methodology", grade: student.gpa >= 3.2 ? "A-" : "B" },
+      { name: "Elective Seminar", grade: "A" }
+    ];
+    
+    const transcriptText = `
+=========================================
+      OFFICIAL ACADEMIC TRANSCRIPT
+=========================================
+Institution: Prime Board University
+Date: ${new Date().toLocaleDateString()}
+
+STUDENT PROFILE
+-----------------------------------------
+Name:    ${student.name}
+ID:      STU-${student.id.padStart(5, '0')}
+Email:   ${student.email}
+Course:  ${student.coarse}
+Status:  ${student.status}
+
+ACADEMIC PERFORMANCE
+-----------------------------------------
+Cumulative GPA: ${student.gpa.toFixed(1)}
+
+COURSEWORK:
+- ${subjects[0].name}: ${subjects[0].grade}
+- ${subjects[1].name}: ${subjects[1].grade}
+- ${subjects[2].name}: ${subjects[2].grade}
+
+FINANCIAL STATUS
+-----------------------------------------
+Tuition: ${student.tuition}
+
+=========================================
+   *** END OF OFFICIAL TRANSCRIPT ***
+=========================================
+`;
+
+    const blob = new Blob([transcriptText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${student.name.replace(/\s+/g, '_')}_Transcript.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    setActiveMenuId(null);
+  };
 
   const handleAdd = (e) => {
     e.preventDefault();
@@ -26,9 +91,11 @@ export default function Students() {
       email: String(data.get("email") ?? ""),
       coarse: String(data.get("coarse") ?? ""),
       status: "Active",
+      gpa: parseFloat(data.get("gpa") ?? "0.0"),
+      tuition: String(data.get("tuition") ?? "Pending"),
       joined: new Date().toISOString().split("T")[0],
     };
-    setStudents((prev) => [...prev, newStudent]);
+    setStudents((prev) => [newStudent, ...prev]);
     setShowAddModal(false);
     form.reset();
   };
@@ -36,6 +103,7 @@ export default function Students() {
   const handleEditOpen = (student) => {
     setEditId(student.id);
     setEditStudent(student);
+    setShowEditModal(true);
   };
 
   const handleEditSave = (e) => {
@@ -45,7 +113,14 @@ export default function Students() {
     setStudents((prev) =>
       prev.map((s) =>
         s.id === editId
-          ? { ...s, name: String(data.get("name") ?? ""), email: String(data.get("email") ?? ""), coarse: String(data.get("coarse") ?? "") }
+          ? { 
+              ...s, 
+              name: String(data.get("name") ?? ""), 
+              email: String(data.get("email") ?? ""), 
+              coarse: String(data.get("coarse") ?? ""),
+              gpa: parseFloat(data.get("gpa") ?? "0.0"),
+              tuition: String(data.get("tuition") ?? "Pending")
+            }
           : s
       )
     );
@@ -59,58 +134,269 @@ export default function Students() {
     setDeleteId(null);
   };
 
-  const filtered = students.filter(
-    (s) =>
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.coarse.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const stats = {
+    total: students.length,
+    avgGpa: students.length > 0 ? (students.reduce((acc, s) => acc + s.gpa, 0) / students.length).toFixed(1) : "0.0",
+    pendingTuition: students.filter(s => s.tuition === 'Pending').length
+  };
+
+  const filtered = students.filter(s => {
+    const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          s.email.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                          s.coarse.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesTab = selectedTab === 'All' || s.status === selectedTab;
+    return matchesSearch && matchesTab;
+  });
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Students</h1>
-        <button onClick={() => setShowAddModal(true)} className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition">+ Add Student</button>
+    <div className="text-slate-900 dark:text-slate-200">
+      <style>{`
+        @media print {
+          .no-print, nav, aside, footer, button, .modal-backdrop, .search-container, .tabs-container { display: none !important; }
+          .print-only { display: block !important; width: 100% !important; }
+          body { background: white !important; color: black !important; margin: 0 !important; padding: 1.5cm !important; }
+          .pdf-table { width: 100% !important; border-collapse: collapse !important; margin-top: 20px !important; }
+          .pdf-table th { background-color: #f3f4f6 !important; color: #374151 !important; text-align: left !important; padding: 10px !important; border: 1px solid #e5e7eb !important; font-size: 11px !important; text-transform: uppercase !important; }
+          .pdf-table td { padding: 10px !important; border: 1px solid #e5e7eb !important; font-size: 10px !important; }
+          .pdf-header { border-bottom: 2px solid #000 !important; margin-bottom: 20px !important; padding-bottom: 10px !important; }
+        }
+        .print-only { display: none; }
+      `}</style>
+
+      <div className="no-print max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Students</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">Manage academic records and enrollment status.</p>
+          </div>
+          <div className="flex gap-3">
+            <button onClick={() => window.print()} className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 transition-all text-sm font-medium">
+              <Download size={18} /> Export List
+            </button>
+            <button onClick={() => setShowAddModal(true)} className="flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-lg transition-all text-sm font-medium">
+              <Plus size={18} /> Add Student
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+          <div className="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-blue-100 dark:bg-blue-500/10 text-blue-600 rounded-xl"><GraduationCap size={24} /></div>
+              <div><p className="text-xs font-semibold text-slate-500 uppercase">Total Enrolled</p><h3 className="text-2xl font-bold">{stats.total}</h3></div>
+            </div>
+          </div>
+          <div className="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-600 rounded-xl"><BookOpen size={24} /></div>
+              <div><p className="text-xs font-semibold text-slate-500 uppercase">Average GPA</p><h3 className="text-2xl font-bold">{stats.avgGpa}</h3></div>
+            </div>
+          </div>
+          <div className="glass-card p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 bg-white dark:bg-slate-900 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-amber-100 dark:bg-amber-500/10 text-amber-600 rounded-xl"><AlertTriangle size={24} /></div>
+              <div><p className="text-xs font-semibold text-slate-500 uppercase">Pending Tuition</p><h3 className="text-2xl font-bold">{stats.pendingTuition}</h3></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="glass-card rounded-2xl border border-slate-200 dark:border-slate-700/50 overflow-hidden bg-white dark:bg-slate-900 shadow-sm mb-8">
+          <div className="p-4 border-b border-slate-200 dark:border-slate-700/50 bg-slate-50/50 dark:bg-slate-800/20 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="relative search-container w-full lg:w-auto">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input 
+                type="text" 
+                placeholder="Search name, email, or course..." 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+                className="pl-10 pr-4 py-2 w-full lg:w-80 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+              />
+            </div>
+            <div className="flex items-center gap-2 tabs-container overflow-x-auto pb-1 lg:pb-0">
+              {['All', 'Active', 'Inactive'].map((tab) => (
+                <button key={tab} onClick={() => setSelectedTab(tab)} className={`px-4 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${selectedTab === tab ? 'bg-blue-100 dark:bg-blue-500/20 text-blue-600' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700/50">
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Student</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Course</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">GPA</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tuition</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                {filtered.map((student) => (
+                  <tr key={student.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">
+                          {student.name.charAt(0)}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">{student.name}</p>
+                          <p className="text-xs text-slate-500">{student.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <GraduationCap size={16} className="text-slate-400" />
+                        {student.coarse}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold ${
+                        student.gpa >= 3.5 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' :
+                        student.gpa >= 3.0 ? 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400' :
+                        'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                      }`}>
+                        {student.gpa.toFixed(1)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`text-xs font-medium px-2 py-1 rounded-md ${
+                        student.tuition === 'Paid' ? 'text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10' : 'text-amber-600 bg-amber-50 dark:bg-amber-500/10'
+                      }`}>
+                        {student.tuition}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${
+                        student.status === 'Active' 
+                          ? 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                          : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20'
+                      }`}>
+                        {student.status === 'Active' ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
+                        {student.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right relative">
+                      <button 
+                        onClick={() => setActiveMenuId(activeMenuId === student.id ? null : student.id)} 
+                        className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg text-slate-400 transition-colors"
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+                      {activeMenuId === student.id && (
+                        <div className="absolute right-6 mt-1 w-40 bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 rounded-xl z-50 text-left py-1.5 overflow-hidden">
+                          <button 
+                            onClick={() => handleDownloadTranscript(student)} 
+                            className="w-full px-4 py-2 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 text-slate-700 dark:text-slate-300 font-medium"
+                          >
+                            <Download size={12}/> Download Transcript
+                          </button>
+                          <button 
+                            onClick={() => { setActiveMenuId(null); handleEditOpen(student); }} 
+                            className="w-full px-4 py-2 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 text-slate-700 dark:text-slate-300"
+                          >
+                            <Edit2 size={12}/> Edit Details
+                          </button>
+                          <button 
+                            onClick={() => toggleStatus(student.id)} 
+                            className="w-full px-4 py-2 text-xs hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2 text-slate-700 dark:text-slate-300"
+                          >
+                             {student.status === 'Active' ? <UserX size={12}/> : <UserCheck size={12}/>} Change Status
+                          </button>
+                          <div className="h-px bg-slate-100 dark:bg-slate-700 my-1" />
+                          <button 
+                            onClick={() => { setActiveMenuId(null); setDeleteId(student.id); }} 
+                            className="w-full px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 flex items-center gap-2"
+                          >
+                            <Trash2 size={12}/> Remove
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-12 text-center text-slate-500">
+                      <div className="flex flex-col items-center gap-2">
+                        <Search size={24} className="text-slate-400 opacity-50" />
+                        <p className="text-sm">No students found matching "{searchQuery}"</p>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <input type="text" placeholder="Search students..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="mb-4 w-full max-w-sm px-4 py-2 border rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
-
-      <div className="overflow-x-auto glass-card">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-slate-100/50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 uppercase text-xs">
-            <tr><th className="px-4 py-3">Name</th><th className="px-4 py-3">Email</th><th className="px-4 py-3">Course</th><th className="px-4 py-3">Status</th><th className="px-4 py-3">Joined</th><th className="px-4 py-3">Actions</th></tr>
-          </thead>
+      <div className="print-only">
+        <div className="pdf-header">
+          <h1 className="text-xl font-bold uppercase">Academic Enrollment Report</h1>
+          <p className="text-[10px]">Reference: EDU-REP-2026 | Date: {new Date().toLocaleDateString()}</p>
+        </div>
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Total Enrolled:</strong> {stats.total}</div>
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Average GPA:</strong> {stats.avgGpa}</div>
+          <div className="border border-slate-300 p-2 text-center text-[10px]"><strong>Pending Tuition:</strong> {stats.pendingTuition}</div>
+        </div>
+        <table className="pdf-table">
+          <thead><tr><th>ID</th><th>Student Name</th><th>Email</th><th>Course</th><th>GPA</th><th>Tuition</th><th>Status</th></tr></thead>
           <tbody>
-            {filtered.map((student) => (
-              <tr key={student.id} className="border-b dark:border-gray-700 bg-white/40 dark:bg-gray-800 hover:bg-white/60 dark:hover:bg-gray-700 transition-colors">
-                <td className="px-4 py-3 font-medium text-gray-800 dark:text-white">{student.name}</td>
-                <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{student.email}</td>
-                <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{student.coarse}</td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-1 rounded-full text-xs font-semibold ${student.status === "Active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{student.status}</span>
-                </td>
-                <td className="px-4 py-3 text-gray-600 dark:text-gray-300">{student.joined}</td>
-                <td className="px-4 py-3 flex gap-2">
-                  <button onClick={() => { handleEditOpen(student); setShowEditModal(true); }} className="text-indigo-600 hover:underline text-xs">Edit</button>
-                  <button onClick={() => setDeleteId(student.id)} className="text-red-500 hover:underline text-xs">Delete</button>
-                </td>
+            {students.map((s) => (
+              <tr key={s.id}>
+                <td>STU-{s.id.padStart(5, '0')}</td>
+                <td><strong>{s.name}</strong></td>
+                <td>{s.email}</td>
+                <td>{s.coarse}</td>
+                <td>{s.gpa.toFixed(1)}</td>
+                <td>{s.tuition}</td>
+                <td className="uppercase">{s.status}</td>
               </tr>
             ))}
           </tbody>
         </table>
+        <div className="mt-12 pt-4 border-t border-slate-200 text-[8px] text-slate-400 text-center">Automated System Export - Confidential Academic Data - Page 1 of 1</div>
       </div>
 
       {showAddModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-lg font-bold mb-4 dark:text-white">Add Student</h2>
-            <form onSubmit={handleAdd} className="space-y-3">
-              <input name="name" required placeholder="Name" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <input name="email" required type="email" placeholder="Email" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <input name="coarse" required placeholder="Course" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setShowAddModal(false)} className="px-4 py-2 rounded-xl border dark:border-gray-600 dark:text-white">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">Add</button>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <h2 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">Add New Student</h2>
+            <p className="text-sm text-slate-500 mb-6">Enter the academic and contact details.</p>
+            <form onSubmit={handleAdd} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Full Name</label>
+                <input name="name" required placeholder="e.g. Jane Doe" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Email Address</label>
+                <input name="email" required type="email" placeholder="jane@example.com" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Enrolled Course</label>
+                <input name="coarse" required placeholder="e.g. Computer Science" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">GPA</label>
+                  <input name="gpa" type="number" step="0.1" min="0" max="4.0" required placeholder="e.g. 3.5" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Tuition</label>
+                  <select name="tuition" className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end pt-4 mt-6 border-t border-slate-100 dark:border-slate-800">
+                <button type="button" onClick={() => setShowAddModal(false)} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all font-medium text-sm">Save Student</button>
               </div>
             </form>
           </div>
@@ -118,16 +404,39 @@ export default function Students() {
       )}
 
       {showEditModal && editStudent && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-xl">
-            <h2 className="text-lg font-bold mb-4 dark:text-white">Edit Student</h2>
-            <form onSubmit={handleEditSave} className="space-y-3">
-              <input name="name" required defaultValue={editStudent.name} placeholder="Name" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <input name="email" required type="email" defaultValue={editStudent.email} placeholder="Email" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <input name="coarse" required defaultValue={editStudent.coarse} placeholder="Course" className="w-full border px-3 py-2 rounded-xl dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
-              <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setShowEditModal(false)} className="px-4 py-2 rounded-xl border dark:border-gray-600 dark:text-white">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700">Save</button>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <h2 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">Edit Student</h2>
+            <p className="text-sm text-slate-500 mb-6">Update academic and contact details.</p>
+            <form onSubmit={handleEditSave} className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Full Name</label>
+                <input name="name" required defaultValue={editStudent.name} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Email Address</label>
+                <input name="email" required type="email" defaultValue={editStudent.email} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Enrolled Course</label>
+                <input name="coarse" required defaultValue={editStudent.coarse} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">GPA</label>
+                  <input name="gpa" type="number" step="0.1" min="0" max="4.0" required defaultValue={editStudent.gpa} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase">Tuition</label>
+                  <select name="tuition" defaultValue={editStudent.tuition} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 outline-none text-sm transition-all text-slate-900 dark:text-slate-100">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end pt-4 mt-6 border-t border-slate-100 dark:border-slate-800">
+                <button type="button" onClick={() => setShowEditModal(false)} className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm">Cancel</button>
+                <button type="submit" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-500/20 transition-all font-medium text-sm">Save Changes</button>
               </div>
             </form>
           </div>
@@ -135,13 +444,16 @@ export default function Students() {
       )}
 
       {deleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-sm shadow-xl text-center">
-            <h2 className="text-lg font-bold mb-2 dark:text-white">Delete Student?</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-4 text-sm">This action cannot be undone.</p>
-            <div className="flex gap-2 justify-center">
-              <button onClick={() => setDeleteId(null)} className="px-4 py-2 rounded-xl border dark:border-gray-600 dark:text-white">Cancel</button>
-              <button onClick={handleDeleteConfirm} className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600">Delete</button>
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-sm shadow-2xl text-center border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-500/20 text-red-600 mx-auto flex items-center justify-center mb-4">
+              <AlertTriangle size={24} />
+            </div>
+            <h2 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Delete Student?</h2>
+            <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">This action cannot be undone. All academic records associated with this student will be permanently removed.</p>
+            <div className="flex gap-3 justify-center">
+              <button onClick={() => setDeleteId(null)} className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors font-medium text-sm">Cancel</button>
+              <button onClick={handleDeleteConfirm} className="flex-1 px-4 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 shadow-md shadow-red-500/20 transition-all font-medium text-sm">Delete</button>
             </div>
           </div>
         </div>

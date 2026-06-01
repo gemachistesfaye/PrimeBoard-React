@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Wrench, Terminal, Database, Code, Activity, Send, Copy, Trash2, 
-  Clock, Fingerprint, AlertCircle
+  Wrench, Terminal, Database, Code, Activity, Send, Copy, Trash2, Clock, Fingerprint, AlertCircle
 } from 'lucide-react';
-
-import { Layout } from "../components/Layout/Layout";
 
 const Card = ({ children, title, icon: Icon, description }) => (
   <div className="glass-card rounded-2xl overflow-hidden flex flex-col">
@@ -118,9 +115,8 @@ export default function App() {
   };
 
   return (
-<Layout>
-    <div className=" bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-200 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-500/30">
-      <div className="max-w-7xl mx-auto px-4 py-10 md:px-8">
+    <div className="text-slate-900 dark:text-slate-200 font-sans selection:bg-indigo-100 dark:selection:bg-indigo-500/30">
+      <div className="max-w-7xl mx-auto">
         
         <header className="mb-10">
           <div className="flex items-center gap-3 mb-2">
@@ -275,6 +271,5 @@ export default function App() {
         </footer>
       </div>
     </div>
-    </Layout>
   );
 }

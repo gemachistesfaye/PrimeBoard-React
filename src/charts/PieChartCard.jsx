@@ -32,7 +32,7 @@ const renderCustomizedLabel = (props) => {
 export default function PieChartCard() {
   return (
     <div className="glass-card rounded-2xl p-5">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Distribution</h2>
+      <h2 className="text-lg font-semibold mb-4 text-slate-800 dark:text-white">Distribution</h2>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
