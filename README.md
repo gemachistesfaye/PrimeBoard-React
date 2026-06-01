@@ -37,7 +37,6 @@
 
 **Prime Board** is a high-fidelity academic management dashboard built for universities and institutions. It delivers a seamless dark-mode-first experience for managing students, generating official PDF transcripts, and visualizing institutional analytics — all from a single, responsive interface.
 
-> Built as part of the [BuildSphere 60-Day Challenge](https://github.com/gemachistesfaye) — one feature shipped every day.
 
 ---
 
@@ -158,29 +157,7 @@ PrimeBoard-React/
 
 ---
 
-## Contributing
-
-Contributions are welcome! Please read the [Contributing Guidelines](.github/CONTRIBUTING.md) before submitting a pull request.
-
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'feat: add your feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a Pull Request
-
----
-
-## Security
-
-Security is taken seriously. Please review the [Security Policy](.github/SECURITY.md) for how to responsibly report vulnerabilities. Do not open public issues for security-related findings.
-
----
-
-## License
-
-This project is licensed under the [MIT License](LICENSE) — free to use, modify, and distribute.
-
----
+#
 
 <div align="center">
 
