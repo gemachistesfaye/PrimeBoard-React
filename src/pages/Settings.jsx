@@ -59,7 +59,7 @@ export default function Settings({ isDarkMode, setIsDarkMode }) {
     name: "Gemachis Tesfaye",
     email: "gemachis.t@university.edu",
     role: "Undergraduate Student",
-    avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop",
+    avatar: "/profile.png",
     id: "USR-99281-XJ"
   });
   
