@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Calendar as CalendarIcon, Clock, User, Plus, Edit2, Trash2, 
   CheckCircle2, XCircle, ChevronLeft, ChevronRight, BookOpen, UserPlus, MoreVertical
@@ -16,6 +16,15 @@ export default function Booking() {
   const [editingApt, setEditingApt] = useState(null);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
+
+  const [today, setToday] = useState(new Date());
+  // Update today every minute so highlight moves automatically
+  useEffect(() => {
+    const interval = setInterval(() => setToday(new Date()), 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+  // State for displayed calendar month
+  const [displayedMonth, setDisplayedMonth] = useState(new Date());
 
   const stats = {
     total: appointments.length,
@@ -106,21 +115,34 @@ export default function Booking() {
         <div className="lg:col-span-1">
           <div className="glass-card rounded-2xl p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-lg">October 2024</h3>
+              <h3 className="font-bold text-lg">{displayedMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</h3>
               <div className="flex gap-2">
-                <button className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"><ChevronLeft size={18} /></button>
-                <button className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"><ChevronRight size={18} /></button>
+                <button onClick={() => setDisplayedMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"><ChevronLeft size={18} /></button>
+                <button onClick={() => setDisplayedMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))} className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"><ChevronRight size={18} /></button>
               </div>
             </div>
             <div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-slate-500 mb-2">
               <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
             </div>
             <div className="grid grid-cols-7 gap-1 text-center text-sm">
-              {[...Array(31)].map((_, i) => (
-                <div key={i} className={`p-2 rounded-lg ${i + 1 === 15 ? 'bg-blue-600 text-white font-bold shadow-md' : 'hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer'}`}>
-                  {i + 1}
-                </div>
-              ))}
+                {[...Array(new Date(displayedMonth.getFullYear(), displayedMonth.getMonth() + 1, 0).getDate())].map((_, i) => {
+                  const day = i + 1;
+                  const isToday = day === today.getDate() && displayedMonth.getMonth() === today.getMonth() && displayedMonth.getFullYear() === today.getFullYear();
+                  const hasAppointment = appointments.some(a => {
+                    const apptDate = new Date(a.date);
+                    return apptDate.getDate() === day && apptDate.getMonth() === displayedMonth.getMonth() && apptDate.getFullYear() === displayedMonth.getFullYear();
+                  });
+                  const bgClass = isToday
+                    ? 'bg-blue-600 text-white font-bold shadow-md'
+                    : hasAppointment
+                    ? 'bg-emerald-600 text-white font-bold shadow-md'
+                    : 'hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer';
+                  return (
+                    <div key={i} className={`p-2 rounded-lg ${bgClass}`}>
+                      {day}
+                    </div>
+                  );
+                })}
             </div>
             <div className="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4">
               <h4 className="font-semibold text-sm mb-3">Upcoming Today</h4>

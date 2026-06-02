@@ -9,11 +9,9 @@ const Analytics = () => (
     <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
-          Advanced Analytics
+          University Academic Insights
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">
-          Comprehensive academic data visualization and performance metrics.
-        </p>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Schedule and manage student advising and academic meetings effortlessly seamlessly.</p>
       </div>
     </header>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

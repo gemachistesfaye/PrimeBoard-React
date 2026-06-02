@@ -27,7 +27,7 @@ export default function Dashboard() {
             Academic Overview
           </h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">
-            Monitor student enrollment, course activity, and institutional performance
+            Monitor student enrollment, course activity and institutional performance
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
