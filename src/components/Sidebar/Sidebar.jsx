@@ -22,7 +22,7 @@ const navItems = [
     icon: GraduationCap,
 
   },
-  { name: "Toolkit", path: "/toolkit", icon: Briefcase },
+  { name: "Tools", path: "/tools", icon: Briefcase },
   { name: "Posts", path: "/posts", icon: PenTool },
 ];
 

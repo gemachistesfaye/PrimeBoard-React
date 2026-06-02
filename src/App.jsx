@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Announcements from "./pages/Announcements";
 import Students from "./pages/Students";
-import Toolkit from "./pages/Toolkit";
+import Tool from "./pages/Tool";
 import Settings from "./pages/Settings";
 import Posts from "./pages/Posts";
 
@@ -37,7 +37,7 @@ export default function App() {
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/students" element={<Students />} />
-          <Route path="/toolkit" element={<Toolkit />} />
+          <Route path="/tools" element={<Tool />} />
           <Route path="/settings" element={<Settings isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
           <Route path="/posts" element={<Posts />} />
         </Routes>

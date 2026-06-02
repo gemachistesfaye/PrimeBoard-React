@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   Calculator, BookOpen, Timer, Play, Pause, RefreshCw, Copy, CheckCircle2, Plus, Trash2, BookMarked
 } from 'lucide-react';
 
-export default function Toolkit() {
+export default function Tool() {
   // GPA Calculator State
   const [courses, setCourses] = useState([{ name: '', credits: 3, grade: 'A' }]);
   const [gpa, setGpa] = useState(4.0);
@@ -54,7 +54,6 @@ export default function Toolkit() {
       setIsActive(false);
       if (mode === 'Work') { setMode('Break'); setTimeLeft(5 * 60); }
       else { setMode('Work'); setTimeLeft(25 * 60); }
-      // Play sound theoretically
     }
     return () => clearInterval(interval);
   }, [isActive, timeLeft, mode]);
@@ -78,20 +77,17 @@ export default function Toolkit() {
           <BookMarked size={24} />
         </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Academic Toolkit</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Academic Tool</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">Essential utilities for students to manage coursework and study time.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
         {/* GPA Calculator */}
         <div className="glass-card rounded-2xl overflow-hidden flex flex-col shadow-sm border border-slate-200 dark:border-slate-800">
           <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50">
             <h3 className="font-bold flex items-center gap-2 text-slate-800 dark:text-slate-100"><Calculator size={18} className="text-blue-600" /> GPA Calculator</h3>
-            <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg font-bold text-sm">
-              GPA: {gpa}
-            </div>
+            <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg font-bold text-sm">GPA: {gpa}</div>
           </div>
           <div className="p-5 space-y-4 flex-1">
             {courses.map((c, i) => (
@@ -121,7 +117,7 @@ export default function Toolkit() {
           </div>
           <div className="p-8 flex-1 flex flex-col items-center justify-center">
             <div className={`w-48 h-48 rounded-full flex items-center justify-center border-[6px] ${isActive ? (mode === 'Work' ? 'border-emerald-500' : 'border-blue-500') : 'border-slate-100 dark:border-slate-800'} transition-colors duration-500 relative`}>
-              <div className={`absolute inset-2 rounded-full border-2 border-dashed ${isActive ? (mode === 'Work' ? 'border-emerald-200 dark:border-emerald-900' : 'border-blue-200 dark:border-blue-900') : 'border-slate-100 dark:border-slate-800'} animate-[spin_10s_linear_infinite] opacity-50`}></div>
+              <div className={`absolute inset-2 rounded-full border-2 border-dashed ${isActive ? (mode === 'Work' ? 'border-emerald-200 dark:border-emerald-900' : 'border-blue-200 dark:border-blue-900') : 'border-slate-100 dark:border-slate-800'} animate-[spin_10s_linear_infinite] opacity-50`} />
               <span className="text-6xl font-black tracking-tighter text-slate-800 dark:text-white z-10">{formatTime(timeLeft)}</span>
             </div>
             <div className="flex gap-4 mt-8">
@@ -142,26 +138,35 @@ export default function Toolkit() {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
-              <div><label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Author(s)</label><input placeholder="e.g. Smith, J. D." value={citation.author} onChange={e => setCitation({...citation, author: e.target.value})} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Publication Year</label><input placeholder="e.g. 2023" value={citation.year} onChange={e => setCitation({...citation, year: e.target.value})} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Book / Article Title</label><input placeholder="e.g. Principles of Design" value={citation.title} onChange={e => setCitation({...citation, title: e.target.value})} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" /></div>
-              <div><label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Publisher / Journal Name</label><input placeholder="e.g. Academic Press" value={citation.publisher} onChange={e => setCitation({...citation, publisher: e.target.value})} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" /></div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Author(s)</label>
+                <input placeholder="e.g. Smith, J. D." value={citation.author} onChange={e => setCitation({...citation, author: e.target.value})} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Publication Year</label>
+                <input placeholder="e.g. 2023" value={citation.year} onChange={e => setCitation({ ...citation, year: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Book / Article Title</label>
+                <input placeholder="e.g. Principles of Design" value={citation.title} onChange={e => setCitation({ ...citation, title: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase mb-1.5">Publisher / Journal Name</label>
+                <input placeholder="e.g. Academic Press" value={citation.publisher} onChange={e => setCitation({ ...citation, publisher: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm outline-none focus:ring-2 focus:ring-blue-500/20 transition-all" />
+              </div>
               <button onClick={generateCitation} className="w-full py-3 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-semibold rounded-xl hover:opacity-90 transition-opacity shadow-md mt-2">Generate Citation</button>
             </div>
             <div className="bg-amber-50/50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20 rounded-2xl p-6 flex flex-col relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 bg-amber-500/10 rounded-bl-full -mr-4 -mt-4"></div>
-              <h4 className="text-xs font-bold text-amber-800 dark:text-amber-500 uppercase mb-3 relative z-10">Generated Output</h4>
-              <div className="flex-1 text-sm font-serif italic text-slate-800 dark:text-slate-300 bg-white dark:bg-slate-900/80 p-5 rounded-xl border border-amber-100 dark:border-amber-500/20 shadow-inner relative z-10 leading-relaxed min-h-[100px]">
-                {generatedCitation || "Your generated APA citation will appear here."}
-              </div>
-              <button disabled={!generatedCitation} onClick={copyCitation} className="mt-4 flex items-center justify-center gap-2 py-2.5 bg-white dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-amber-700 dark:text-slate-300 rounded-xl font-medium text-sm hover:bg-amber-100 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 relative z-10">
+              <div className="absolute top-0 right-0 p-8 bg-amber-500/10 rounded-bl-full -mr-4 -mt-4" />
+              <h4 className="text-xs font-bold text-amber-800 dark:text-amber-500 uppercase mb-3">Generated Output</h4>
+              <div className="flex-1 text-sm font-serif italic text-slate-800 dark:text-slate-300 bg-white dark:bg-slate-900/80 p-5 rounded-xl border border-amber-100 dark:border-amber-500/20 shadow-inner relative z-10 leading-relaxed min-h-[100px]">{generatedCitation || "Your generated APA citation will appear here."}</div>
+              <button disabled={!generatedCitation} onClick={copyCitation} className="mt-4 flex items-center justify-center gap-2 py-2.5 bg-white dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-amber-700 dark:text-slate-300 rounded-xl font-medium text-sm hover:bg-amber-100 dark:hover:bg-slate-700 transition-colors disabled:opacity-50">
                 {copied ? <CheckCircle2 size={16} className="text-emerald-500"/> : <Copy size={16} />}
                 {copied ? 'Copied to Clipboard!' : 'Copy to Clipboard'}
               </button>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
