@@ -2,7 +2,7 @@ import { Sidebar } from "../Sidebar/Sidebar";
 
 export const Layout = ({ children, isDarkMode = false }) => {
   return (
-    <div className={`min-h-screen ${isDarkMode ? "dark" : ""} bg-transparent`}>
+    <div className={`min-h-screen ${isDarkMode ? "dark" : ""} bg-transparent flex relative`}>
       
       {/* Sidebar */}
       <Sidebar />
